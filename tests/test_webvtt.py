@@ -139,6 +139,10 @@ class WebVTTReaderTestCase(unittest.TestCase):
             u"This cue starts before the previous one.\n")
         )
 
+    def test_webvtt_empty_cue(self):
+        self.assertEqual(1, len(self.reader.read(
+                SAMPLE_WEBVTT_EMPTY_CUE).get_captions('en-US')))
+
 
 class WebVTTWriterTestCase(unittest.TestCase):
 
