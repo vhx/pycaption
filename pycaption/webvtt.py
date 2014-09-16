@@ -64,13 +64,10 @@ class WebVTTReader(BaseReader):
 
             elif u'' == line:
                 if found_timing:
-                    if caption.is_empty():
-                        raise CaptionReadSyntaxError(
-                            u'Cue without content. (line %d)' % timing_line)
-                    else:
-                        found_timing = False
+                    found_timing = False
+                    if not caption.is_empty():
                         captions.append(caption)
-                        caption = None
+                    caption = None
             else:
                 if found_timing:
                     if not caption.is_empty():
