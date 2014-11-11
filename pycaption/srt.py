@@ -10,8 +10,7 @@ class SRTReader(BaseReader):
             return False
         if lines[0].isdigit() and u'-->' in lines[1]:
             return True
-        else:
-            return False
+        return False
 
     def read(self, content, lang=u'en-US'):
         if type(content) != unicode:
