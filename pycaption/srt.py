@@ -2,6 +2,7 @@ from .base import (
     BaseReader, BaseWriter, CaptionSet, Caption, CaptionNode)
 from .exceptions import CaptionReadNoCaptions
 
+import re
 
 class SRTReader(BaseReader):
     def detect(self, content):
@@ -29,9 +30,18 @@ class SRTReader(BaseReader):
 
             end_line = self._find_text_line(start_line, lines)
 
-            timing = lines[start_line + 1].split(u'-->')
-            caption.start = self._srttomicro(timing[0].strip(u' \r\n'))
-            caption.end = self._srttomicro(timing[1].strip(u' \r\n'))
+            # Stupid hacks for malformed files
+            timing = re.match('^([0-9]{1,}:[0-9]{1,}:[0-9]{1,},[0-9]{1,}) --> ([0-9]{1,}:[0-9]{1,}:[0-9]{1,},[0-9]{1,})', lines[start_line + 1])
+            if timing == None:
+                timing = lines[start_line + 1].split(u'-->')
+                if len(timing) < 2:
+                    raise CaptionReadNoCaptions("Malformed file.")
+                else:
+                    caption.start = self._srttomicro(timing[0].strip(u' \r\n'))
+                    caption.end = self._srttomicro(timing[1].strip(u' \r\n'))
+            else:
+                caption.start = self._srttomicro(timing.group(1).strip(u' \r\n'))
+                caption.end = self._srttomicro(timing.group(2).strip(u' \r\n'))
 
             for line in lines[start_line + 2:end_line - 1]:
                 # skip extra blank lines
