@@ -9,7 +9,7 @@ class SRTReader(BaseReader):
         lines = content.splitlines()
         if len(lines) < 2:
             return False
-        if lines[0].isdigit() and u'-->' in lines[1]:
+        if self._isdigit(lines[0]) and u'-->' in lines[1]:
             return True
         return False
 
@@ -23,7 +23,7 @@ class SRTReader(BaseReader):
         captions = []
 
         while start_line < len(lines):
-            if not lines[start_line].isdigit():
+            if not self._isdigit(lines[start_line]):
                 break
 
             caption = Caption()
@@ -62,6 +62,10 @@ class SRTReader(BaseReader):
             raise CaptionReadNoCaptions(u"empty caption file")
 
         return caption_set
+
+    def _isdigit(self, line):
+        matchset = re.match('[0-9]{1,}', line)
+        return matchset != None
 
     def _srttomicro(self, stamp):
         timesplit = stamp.split(u':')
