@@ -93,8 +93,11 @@ class DFXPReader(BaseReader):
         try:
             end = self._translate_time(p_tag[u'end'])
         except KeyError:
-            dur = self._translate_time(p_tag[u'dur'])
-            end = start + dur
+            try:
+                dur = self._translate_time(p_tag[u'dur'])
+                end = start + dur
+            except KeyError:
+                end = start + 1000000
 
         return start, end
 
