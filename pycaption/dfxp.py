@@ -98,7 +98,8 @@ class DFXPReader(BaseReader):
                 end = start + dur
             except KeyError:
                 end = start + 1000000
-
+        except IndexError:
+            end = start + 1000000
         return start, end
 
     def _translate_time(self, stamp):
